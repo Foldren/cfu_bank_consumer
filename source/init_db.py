@@ -1,5 +1,5 @@
 from tortoise import Tortoise
-from source.config import POSTGRES_URL
+from config import POSTGRES_URL
 
 
 async def init_db():

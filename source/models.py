@@ -1,7 +1,7 @@
 from enum import IntEnum, Enum
 from tortoise import Model
 from tortoise.fields import BigIntField, ForeignKeyRelation, ForeignKeyField, ReverseRelation, TextField, OnDelete, \
-    BinaryField, DateField, IntEnumField, BooleanField, CharField, CharEnumField, DecimalField
+    BinaryField, DateField, IntEnumField, CharField, CharEnumField, DecimalField
 
 
 class SupportBank(Model):
@@ -75,38 +75,3 @@ class DataCollect(Model):
 
     class Meta:
         table = "data_collects"
-
-
-# class Contragent():
-#     id = BigIntField(pk=True)
-#     user_id = CharField(max_length=100, index=True, null=False)
-#     category: ForeignKeyRelation['Category'] = ForeignKeyField('models.Category',
-#                                                                on_delete=OnDelete.CASCADE,
-#                                                                related_name="contragents", null=False)
-#     inn = BigIntField(null=False, unique=True)
-#     name = CharField(max_length=50, null=False)
-#
-#     class Meta:
-#         table = "contragents"
-#
-#
-# class CategoryLevel(IntEnum):
-#     one = 1
-#     two = 2
-#     three = 3
-#     four = 4
-#     five = 5
-#
-#
-# class Category():
-#     id = BigIntField(pk=True)
-#     parent: ForeignKeyRelation['Category'] = ForeignKeyField('models.Category', on_delete=OnDelete.CASCADE,
-#                                                              related_name="child_categories", null=True)
-#     child_categories: ReverseRelation["Category"]  # Связь один ко многим к самому себе (выводим дочерние элементы)
-#     contragents: ReverseRelation['Contragent']
-#     name = CharField(max_length=50, null=False)
-#     status = BooleanField(default=1)
-#     level = IntEnumField(enum_type=CategoryLevel, description="Уровень вложенности категории", default=1)
-#
-#     class Meta:
-#         table = "categories"

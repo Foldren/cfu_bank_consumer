@@ -1,4 +1,4 @@
-from faststream.rabbit import RabbitRouter, RabbitMessage
+from faststream.rabbit import RabbitRouter
 from source.queues import bank_queue
 
 router = RabbitRouter()

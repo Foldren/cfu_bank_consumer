@@ -1,7 +1,7 @@
 from environs import Env
 
 env = Env()
-env.read_env('source/.env')
+env.read_env('.env')
 
 POSTGRES_URL = env('POSTGRES_URL')
 RABBITMQ_URL = env('RABBITMQ_URL')
