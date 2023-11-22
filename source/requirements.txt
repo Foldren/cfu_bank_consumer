@@ -1,0 +1,7 @@
+faststream~=0.2.14
+aio-pika
+tortoise-orm
+tortoise-orm[asyncpg]
+environs~=9.5.0
+asyncpg
+aerich
