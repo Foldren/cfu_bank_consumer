@@ -1,12 +1,12 @@
-from environs import Env
+from os import getenv
+from dotenv import load_dotenv
 
-env = Env()
-env.read_env('.env')
+load_dotenv()
 
-POSTGRES_URL = env('POSTGRES_URL')
-RABBITMQ_URL = env('RABBITMQ_URL')
+POSTGRES_URL = getenv('POSTGRES_URL')
+RABBITMQ_URL = getenv('RABBITMQ_URL')
 AERICH_CONFIG = {
-    "connections": {"default": env('POSTGRES_URL')},
+    "connections": {"default": getenv('POSTGRES_URL')},
     "apps": {
         "models": {
             "models": ["source.models", "aerich.models"],
