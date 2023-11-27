@@ -5,7 +5,7 @@ from taskiq_faststream import BrokerWrapper
 from tortoise import run_async
 from config import RABBITMQ_URL
 from init_db import init_db
-from routers import manage_banks
+from router import manage_banks
 
 broker = RabbitBroker(RABBITMQ_URL)
 app = FastStream(broker)

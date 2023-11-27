@@ -5,7 +5,7 @@ from typing import Any
 @dataclass
 class RpcError:
     message: str
-    statusCode: int = 400
+    statusCode: int = 422
 
 
 @dataclass

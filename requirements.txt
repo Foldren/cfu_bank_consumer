@@ -5,3 +5,5 @@ tortoise-orm[asyncpg]
 environs~=9.5.0
 asyncpg
 aerich
+attrs~=21.4.0
+python-dotenv~=1.0.0
