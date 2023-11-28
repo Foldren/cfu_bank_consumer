@@ -1,7 +1,7 @@
 from typing import Any
 from faststream import Context
 from faststream.rabbit import RabbitQueue, RabbitRouter
-from responses.rpc import RpcResponse, RpcError
+from components.responses.rpc import RpcResponse, RpcError
 
 
 def consumer(router: RabbitRouter, queue: RabbitQueue, pattern: str, request: Any = Any):
