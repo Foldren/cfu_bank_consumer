@@ -2,9 +2,9 @@ from faststream.rabbit import RabbitRouter
 from config import ContextBody
 from decorators import consumer
 from models import SupportBank, UserBank, PaymentAccount
-from source.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBankRequest, GetUserBankRequest, \
+from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBankRequest, GetUserBankRequest, \
     CloseBankAccountRequest, ExpensesRequest
-from responses.manage_banks import SupportedBankResponse, DSupportedBank, CreateBankResponse, UpdateUserBankResponse, \
+from components.responses.manage_banks import SupportedBankResponse, DSupportedBank, CreateBankResponse, UpdateUserBankResponse, \
     DeleteUserBankResponse, DBank, GetUserBankResponse, CloseBankAccountResponse
 from source.queues import bank_queue
 
