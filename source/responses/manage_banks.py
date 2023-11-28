@@ -21,6 +21,7 @@ class ICashBalanceOnHand:
     fio: str
     balance: IBalance
 
+
 @dataclass
 class DSupportedBank:
     __slots__ = {"id", "name", "url"}
