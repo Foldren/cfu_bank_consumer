@@ -6,7 +6,7 @@ from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRe
     CloseBankAccountRequest, ExpensesRequest
 from components.responses.manage_banks import SupportedBankResponse, DSupportedBank, CreateBankResponse, UpdateUserBankResponse, \
     DeleteUserBankResponse, DBank, GetUserBankResponse, CloseBankAccountResponse
-from source.queues import bank_queue
+from queues import bank_queue
 
 router = RabbitRouter()
 
