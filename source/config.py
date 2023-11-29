@@ -1,11 +1,11 @@
 from os import getenv
+from pathlib import Path
 from dotenv import load_dotenv
-from faststream import Context
 
 load_dotenv()
 
-
-ContextBody = Context("message.decoded_body.data", cast=True)
+IS_THIS_LOCAL = "Pycharm" in str(Path.cwd())
+BANK_QUEUE = "test_queue" if IS_THIS_LOCAL else "bank_queue"
 POSTGRES_URL = getenv('POSTGRES_URL')
 RABBITMQ_URL = getenv('RABBITMQ_URL')
 PROXY6NET_PROXIES = {"socks5://": getenv('PROXY_HTTPS_URL')}

@@ -1,12 +1,16 @@
 from dataclasses import dataclass
 
 
+@dataclass
 class AccountBalancesRequest:
+    __slots__ = {"legalEntities", "userID"}
     legalEntities: list[str]
     userID: str
 
 
+@dataclass
 class CashBalancesOnHandRequest:
+    __slots__ = {"legalEntities", "userID"}
     legalEntities: list[str]
     userID: str
 
