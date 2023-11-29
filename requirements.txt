@@ -8,3 +8,5 @@ aerich
 attrs~=21.4.0
 python-dotenv~=1.0.0
 httpx
+money~=1.3.0
+simplejson~=3.19.2

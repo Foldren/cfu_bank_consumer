@@ -8,6 +8,7 @@ from components.responses.manage_banks import SupportedBankResponse, CreateBankR
 from decorators import consumer
 from models import SupportBank, UserBank, PaymentAccount
 from queues import bank_queue
+from money import Money
 
 router = RabbitRouter()
 
@@ -108,13 +109,13 @@ async def get_user_account_balances(request: AccountBalancesRequest):
     for pa in selected_pa:
         pa_sup_bank_name = pa.user_bank.support_bank.name.split(".")[0]
         if pa_sup_bank_name not in list_bank_balances:
-            list_bank_balances[pa_sup_bank_name] = round(float(pa.balance), 2)
+            list_bank_balances[pa_sup_bank_name] = Money(amount=pa.balance, currency="RUB")
         else:
-            list_bank_balances[pa_sup_bank_name] = round(list_bank_balances[pa_sup_bank_name] + float(pa.balance), 2)
+            list_bank_balances[pa_sup_bank_name] = list_bank_balances[pa_sup_bank_name] + Money(amount=pa.balance, currency="RUB")
 
     list_d_balances = []
     for bank, balance in list_bank_balances.items():
-        d_balance = DBalance(balance=balance, currency="RUB")
+        d_balance = DBalance(balance=balance.amount, currency="RUB")
         list_d_balances.append(DAccountBalance(bank=bank, balance=d_balance))
 
     return AccountBalancesResponse(balances=list_d_balances)
