@@ -1,4 +1,6 @@
+import random
 from faststream.rabbit import RabbitRouter
+from money import Money
 from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBankRequest, \
     GetUserBankRequest
 from components.requests.manage_payment_accounts import CloseBankAccountRequest, AccountBalancesRequest, \
@@ -6,12 +8,10 @@ from components.requests.manage_payment_accounts import CloseBankAccountRequest,
 from components.responses.children import DSupportedBank, DBank, DAccountBalance, DBalance
 from components.responses.manage_banks import SupportedBankResponse, CreateBankResponse, UpdateUserBankResponse, \
     DeleteUserBankResponse, GetUserBankResponse
-from components.responses.manage_payment_accounts import CloseBankAccountResponse, AccountBalancesResponse, \
-    UserAddCurrentAccountResponse
+from components.responses.manage_payment_accounts import CloseBankAccountResponse, AccountBalancesResponse
 from decorators import consumer
 from models import SupportBank, UserBank, PaymentAccount
 from queues import bank_queue
-from money import Money
 
 router = RabbitRouter()
 
@@ -150,4 +150,13 @@ async def create_user_payment_accounts(request: UserAddCurrentAccountRequest):
 
     await user_bank.payment_accounts.add(*list_new_pa)
 
-    return UserAddCurrentAccountResponse()
+    # return UserAddCurrentAccountResponse()
+
+
+@consumer(router=router, queue=bank_queue, pattern='test_date_default')
+async def test_date_default():
+    await PaymentAccount.create(
+        legal_entity_id="123",
+        user_bank_id=1,
+        number=str(random.randint(1, 900))
+    )
