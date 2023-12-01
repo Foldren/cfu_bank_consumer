@@ -1,10 +1,13 @@
 from faststream.rabbit import RabbitRouter
 from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBankRequest, \
-    GetUserBankRequest, \
-    CloseBankAccountRequest, AccountBalancesRequest
+    GetUserBankRequest
+from components.requests.manage_payment_accounts import CloseBankAccountRequest, AccountBalancesRequest, \
+    UserAddCurrentAccountRequest
 from components.responses.children import DSupportedBank, DBank, DAccountBalance, DBalance
 from components.responses.manage_banks import SupportedBankResponse, CreateBankResponse, UpdateUserBankResponse, \
-    DeleteUserBankResponse, GetUserBankResponse, CloseBankAccountResponse, AccountBalancesResponse
+    DeleteUserBankResponse, GetUserBankResponse
+from components.responses.manage_payment_accounts import CloseBankAccountResponse, AccountBalancesResponse, \
+    UserAddCurrentAccountResponse
 from decorators import consumer
 from models import SupportBank, UserBank, PaymentAccount
 from queues import bank_queue
@@ -100,8 +103,8 @@ async def close_user_bank_account(request: CloseBankAccountRequest):
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-user-account-balances", request=AccountBalancesRequest)
 async def get_user_account_balances(request: AccountBalancesRequest):
-    selected_pa = await PaymentAccount\
-        .filter(user_bank__user_id=request.userID, legal_entity_id__in=request.legalEntities)\
+    selected_pa = await PaymentAccount \
+        .filter(user_bank__user_id=request.userID, legal_entity_id__in=request.legalEntities) \
         .select_related("user_bank__support_bank")
 
     # Пробегаемся по счетам и складываем балансы для каждого банка -----------------------------------------------------
@@ -111,7 +114,8 @@ async def get_user_account_balances(request: AccountBalancesRequest):
         if pa_sup_bank_name not in list_bank_balances:
             list_bank_balances[pa_sup_bank_name] = Money(amount=pa.balance, currency="RUB")
         else:
-            list_bank_balances[pa_sup_bank_name] = list_bank_balances[pa_sup_bank_name] + Money(amount=pa.balance, currency="RUB")
+            list_bank_balances[pa_sup_bank_name] = list_bank_balances[pa_sup_bank_name] + Money(amount=pa.balance,
+                                                                                                currency="RUB")
 
     list_d_balances = []
     for bank, balance in list_bank_balances.items():
@@ -129,3 +133,21 @@ async def get_user_expenses():
 @consumer(router=router, queue=bank_queue, pattern="bank.get-user-cash-balances-on-hand")
 async def get_user_cash_balances_on_hand():
     return 'Get user cash balances on hand handler is working!'
+
+
+@consumer(router=router, queue=bank_queue, pattern='bank.user-add-current-account',
+          request=UserAddCurrentAccountRequest)
+async def create_user_payment_accounts(request: UserAddCurrentAccountRequest):
+    user_bank = await UserBank.filter(id=request.userBankId, user_id=request.userId).first()
+
+    list_new_pa = []
+    for number in request.currentAccounts:
+        list_new_pa.append(PaymentAccount(
+            legal_entity_id=request.legalEntityId,
+            user_bank_id=request.userBankId,
+            number=number)
+        )
+
+    await user_bank.payment_accounts.add(*list_new_pa)
+
+    return UserAddCurrentAccountResponse()

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from components.responses.children import DExpenses, DAccountBalance, DCashBalanceOnHand, DSupportedBank, DBank
+from components.responses.children import DExpenses, DCashBalanceOnHand, DSupportedBank, DBank
 
 
 @dataclass
@@ -38,22 +38,10 @@ class DeleteUserBankResponse:
 
 
 @dataclass
-class CloseBankAccountResponse:
-    __slots__ = {"id"}
-    id: int
-
-
-@dataclass
 class ExpensesResponse:
     __slots__ = {"commodityCosts", "businessExpenses"}
     commodityCosts: DExpenses
     businessExpenses: DExpenses
-
-
-@dataclass
-class AccountBalancesResponse:
-    __slots__ = {"balances"}
-    balances: list[DAccountBalance]
 
 
 @dataclass
