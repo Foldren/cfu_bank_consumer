@@ -18,6 +18,6 @@ class AccountBalancesResponse:
 @dataclass
 class UserAddCurrentAccountResponse:
     __slots__ = {"userId", "legalEntityId", "userBankId", "currentAccounts"}
-    paymentAccountId: int
+    paymentAccountsId: list[int]
     supportedBankId: int
     currentAccounts: list[str]
