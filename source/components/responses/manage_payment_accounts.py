@@ -3,7 +3,7 @@ from components.responses.children import DAccountBalanceResponse
 
 
 @dataclass
-class CloseBankAccountResponse:
+class ClosePaymentAccountResponse:
     __slots__ = {"id"}
     id: int
 
@@ -15,8 +15,8 @@ class AccountBalancesResponse:
 
 
 @dataclass
-class UserAddCurrentAccountResponse:
-    __slots__ = {"userId", "legalEntityId", "userBankId", "currentAccounts"}
-    paymentAccountsId: list[int]
-    supportedBankId: int
-    currentAccounts: list[str]
+class CreatePaymentAccountResponse:
+    __slots__ = {"supportedBankLogoUrl", "bankID", "paymentAccountNumber"}
+    supportedBankLogoUrl: str
+    bankID: int
+    paymentAccountNumber: str

@@ -1,10 +1,13 @@
+import traceback
+
 from faststream.rabbit import RabbitRouter
 from money import Money
 
-from components.requests.manage_payment_accounts import UserAddCurrentAccountRequest, CloseBankAccountRequest, \
+from components.requests.manage_payment_accounts import CreatePaymentAccountRequest, ClosePaymentAccountRequest, \
     AccountBalancesRequest
 from components.responses.children import DBalanceResponse, DAccountBalanceResponse
-from components.responses.manage_payment_accounts import CloseBankAccountResponse, AccountBalancesResponse
+from components.responses.manage_payment_accounts import ClosePaymentAccountResponse, AccountBalancesResponse, \
+    CreatePaymentAccountResponse
 from decorators import consumer
 from models import PaymentAccount, UserBank
 from queues import bank_queue
@@ -12,31 +15,31 @@ from queues import bank_queue
 router = RabbitRouter()
 
 
-@consumer(router=router, queue=bank_queue, pattern='bank.user-add-current-account',
-          request=UserAddCurrentAccountRequest)
-async def create_user_payment_accounts(request: UserAddCurrentAccountRequest):
-    user_bank = await UserBank.filter(id=request.userBankId, user_id=request.userId).first()
+@consumer(router=router, queue=bank_queue, pattern='bank.create-user-payment-account',
+          request=CreatePaymentAccountRequest)
+async def create_payment_account(request: CreatePaymentAccountRequest):
+    await PaymentAccount.create(
+        legal_entity_id=request.legalEntityID,
+        user_bank_id=request.bankID,
+        number=request.number
+    )
 
-    list_new_pa = []
-    for number in request.currentAccounts:
-        list_new_pa.append(PaymentAccount(
-            legal_entity_id=request.legalEntityId,
-            user_bank_id=request.userBankId,
-            number=number)
-        )
+    pa_bank = await UserBank.filter(id=request.bankID).select_related("support_bank").first()
 
-    await user_bank.payment_accounts.add(*list_new_pa)
-
-    # return UserAddCurrentAccountResponse()
+    return CreatePaymentAccountResponse(
+        supportedBankLogoUrl=pa_bank.support_bank.logo_url,
+        bankID=pa_bank.id,
+        paymentAccountNumber=request.number
+    )
 
 
-@consumer(router=router, queue=bank_queue, pattern="bank.close-user-bank-account", request=CloseBankAccountRequest)
-async def close_user_bank_account(request: CloseBankAccountRequest):
+@consumer(router=router, queue=bank_queue, pattern="bank.close-user-bank-account", request=ClosePaymentAccountRequest)
+async def close_payment_account(request: ClosePaymentAccountRequest):
     pa = await PaymentAccount.filter(id=request.paymentAccountID, user_bank__user_id=request.userID).first()
     pa.status = 0
     await pa.save()
 
-    return CloseBankAccountResponse(id=request.paymentAccountID)
+    return ClosePaymentAccountResponse(id=request.paymentAccountID)
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-user-account-balances", request=AccountBalancesRequest)

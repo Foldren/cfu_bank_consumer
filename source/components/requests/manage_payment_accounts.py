@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class CloseBankAccountRequest:
+class ClosePaymentAccountRequest:
     __slots__ = {"userID", "paymentAccountID"}
     userID: str
     paymentAccountID: int
@@ -16,9 +16,8 @@ class AccountBalancesRequest:
 
 
 @dataclass
-class UserAddCurrentAccountRequest:
-    __slots__ = {"userId", "legalEntityId", "userBankId", "currentAccounts"}
-    userId: str
-    legalEntityId: str
-    userBankId: int
-    currentAccounts: list[str]
+class CreatePaymentAccountRequest:
+    __slots__ = {"number", "bankID", "legalEntityID"}
+    number: str
+    bankID: int
+    legalEntityID: str
