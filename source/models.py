@@ -57,7 +57,7 @@ class PaymentAccount(Model):
     data_collects: ReverseRelation['PaymentAccount']
     start_date = DateField(null=True, default=get_start_current_year_date)
     number = CharField(max_length=50, null=False, unique=True)
-    balance = CharField(max_length=30, null=True)
+    balance = CharField(max_length=30, null=True, default="0")
     status = IntEnumField(enum_type=PaymentAccountStatus, description="Статус расчётного счета", default=1)
 
     class Meta:

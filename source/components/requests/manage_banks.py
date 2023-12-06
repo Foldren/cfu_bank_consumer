@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from components.requests.children import DPaymentAccountRequest
 
 
 @dataclass
@@ -10,11 +11,11 @@ class CashBalancesOnHandRequest:
 
 @dataclass
 class CreateBankRequest:
-    __slots__ = {"bankID", "name", "token", "userID"}
     bankID: int
     name: str
     token: str
     userID: str
+    paymentAccounts: list[DPaymentAccountRequest] = None
 
 
 @dataclass
@@ -26,14 +27,14 @@ class UpdateUserBankRequest:
 
 
 @dataclass
-class DeleteUserBankRequest:
-    __slots__ = {"userID", "bankID"}
+class DeleteUserBanksRequest:
+    __slots__ = {"userID", "banksID"}
     userID: str
-    bankID: int
+    banksID: list[int]
 
 
 @dataclass
-class GetUserBankRequest:
+class GetUserBanksRequest:
     __slots__ = {"userID"}
     userID: str
 

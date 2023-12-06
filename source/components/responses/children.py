@@ -4,35 +4,35 @@ from typing import Union
 
 
 @dataclass
-class DBalance:
+class DBalanceResponse:
     __slots__ = {"balance", "currency"}
     balance: Decimal
     currency: str
 
 
 @dataclass
-class DExpenses:
+class DExpensesResponse:
     __slots__ = {"cash", "nonCash"}
-    cash: DBalance
-    nonCash: DBalance
+    cash: DBalanceResponse
+    nonCash: DBalanceResponse
 
 
 @dataclass
-class DAccountBalance:
+class DAccountBalanceResponse:
     __slots__ = {"bank", "balance"}
     bank: str
-    balance: Union[DBalance, None]
+    balance: Union[DBalanceResponse, None]
 
 
 @dataclass
-class DCashBalanceOnHand:
+class DCashBalanceOnHandResponse:
     __slots__ = {"fio", "balance"}
     fio: str
-    balance: DBalance
+    balance: DBalanceResponse
 
 
 @dataclass
-class DSupportedBank:
+class DSupportedBankResponse:
     __slots__ = {"id", "name", "url"}
     id: int
     name: str
@@ -40,9 +40,20 @@ class DSupportedBank:
 
 
 @dataclass
-class DBank:
-    __slots__ = {"id", "name", "bankID", "token"}
+class DPaymentAccountResponse:
+    __slots__ = {"id", "number", "status"}
+    id: int
+    number: str
+    status: bool
+
+
+@dataclass
+class DBankResponse:
+    __slots__ = {"id", "name", "bankID", "supportBankName", "token", "paymentAccounts"}
     id: int
     name: str
     bankID: int
+    supportBankName: str
     token: str
+    paymentAccounts: list[DPaymentAccountResponse]
+

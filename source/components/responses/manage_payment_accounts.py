@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-
-from components.responses.children import DAccountBalance
+from components.responses.children import DAccountBalanceResponse
 
 
 @dataclass
@@ -12,7 +11,7 @@ class CloseBankAccountResponse:
 @dataclass
 class AccountBalancesResponse:
     __slots__ = {"balances"}
-    balances: list[DAccountBalance]
+    balances: list[DAccountBalanceResponse]
 
 
 @dataclass
