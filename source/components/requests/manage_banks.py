@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from components.requests.children import DPaymentAccountRequest
 
 
 @dataclass
@@ -15,7 +14,8 @@ class CreateBankRequest:
     name: str
     token: str
     userID: str
-    paymentAccounts: list[DPaymentAccountRequest] = None
+    legalEntityID: str = None
+    paymentAccounts: list[str] = None
 
 
 @dataclass

@@ -31,28 +31,28 @@ async def get_supported_banks():
 async def create_user_bank(request: CreateBankRequest):
     created_bank = await UserBank.create(user_id=request.userID, support_bank_id=request.bankID, name=request.name,
                                          token=request.token.encode())
-    bank_p_accounts = request.paymentAccounts
+    bank_p_accounts_n = request.paymentAccounts
     support_bank = await created_bank.support_bank
     list_p_accounts_response = None
 
     # Если в запросе есть расчетные счета
-    if bank_p_accounts:
-        list_pas_obj = []
-        for pa in bank_p_accounts:
-            list_pas_obj.append(
-                PaymentAccount(legal_entity_id=pa.legalEntityID, user_bank_id=created_bank.id,
-                               number=pa.number, status=pa.status)
+    if bank_p_accounts_n:
+        list_p_accounts_obj = []
+        for pa_n in bank_p_accounts_n:
+            list_p_accounts_obj.append(
+                PaymentAccount(legal_entity_id=request.legalEntityID, user_bank_id=created_bank.id, number=pa_n)
             )
 
         # Создаем расчетные счета
-        await PaymentAccount.bulk_create(list_pas_obj, ignore_conflicts=True)
+        await PaymentAccount.bulk_create(list_p_accounts_obj, ignore_conflicts=True)
         created_p_accounts = await PaymentAccount.filter(user_bank_id=created_bank.id)
 
         # Формируем из них респонсы
         list_p_accounts_response = []
         for pa in created_p_accounts:
             list_p_accounts_response.append(
-                DPaymentAccountResponse(id=pa.id, number=pa.number, status=pa.status)
+                DPaymentAccountResponse(id=pa.id, accountNumber=pa.number, status=pa.status,
+                                        legalEntityID=request.legalEntityID)
             )
 
     return CreateUserBankResponse(id=created_bank.id, name=created_bank.name, bankID=support_bank.id,
