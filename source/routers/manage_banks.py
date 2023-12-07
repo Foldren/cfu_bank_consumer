@@ -96,7 +96,8 @@ async def get_user_banks(request: GetUserBanksRequest):
     for bank in user_banks:
         list_payment_accounts = []
         for pa in bank.payment_accounts:
-            list_payment_accounts.append(DPaymentAccountResponse(id=pa.id, number=pa.number, status=pa.status))
+            list_payment_accounts.append(DPaymentAccountResponse(id=pa.id, accountNumber=pa.number, status=pa.status,
+                                                                 legalEntityID=pa.legal_entity_id))
 
         list_banks.append(
             DBankResponse(
