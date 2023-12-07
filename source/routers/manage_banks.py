@@ -36,7 +36,7 @@ async def create_user_bank(request: CreateBankRequest):
     list_p_accounts_response = None
 
     # Если в запросе есть расчетные счета
-    if bank_p_accounts_n:
+    if bank_p_accounts_n is not None:
         list_p_accounts_obj = []
         for pa_n in bank_p_accounts_n:
             list_p_accounts_obj.append(
