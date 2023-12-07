@@ -17,7 +17,8 @@ class AccountBalancesRequest:
 
 @dataclass
 class CreatePaymentAccountRequest:
-    __slots__ = {"number", "bankID", "legalEntityID"}
-    number: str
+    __slots__ = {"paymentAccountNumber", "userID", "bankID", "legalEntityID"}
+    paymentAccountNumber: str
+    userID: str
     bankID: int
     legalEntityID: str

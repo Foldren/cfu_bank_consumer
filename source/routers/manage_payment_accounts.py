@@ -18,19 +18,24 @@ router = RabbitRouter()
 @consumer(router=router, queue=bank_queue, pattern='bank.create-user-payment-account',
           request=CreatePaymentAccountRequest)
 async def create_payment_account(request: CreatePaymentAccountRequest):
-    await PaymentAccount.create(
-        legal_entity_id=request.legalEntityID,
-        user_bank_id=request.bankID,
-        number=request.number
-    )
+    user_bank = await UserBank.filter(id=request.bankID, user_id=request.userID).all()
 
-    pa_bank = await UserBank.filter(id=request.bankID).select_related("support_bank").first()
+    if user_bank:
+        await PaymentAccount.create(
+            legal_entity_id=request.legalEntityID,
+            user_bank_id=request.bankID,
+            number=request.paymentAccountNumber
+        )
 
-    return CreatePaymentAccountResponse(
-        supportedBankLogoUrl=pa_bank.support_bank.logo_url,
-        bankID=pa_bank.id,
-        paymentAccountNumber=request.number
-    )
+        pa_bank = await UserBank.filter(id=request.bankID).select_related("support_bank").first()
+
+        return CreatePaymentAccountResponse(
+            supportedBankLogoUrl=pa_bank.support_bank.logo_url,
+            bankID=pa_bank.id,
+            paymentAccountNumber=request.paymentAccountNumber
+        )
+    else:
+        raise Exception("This bank does not belong to the user!")
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.close-user-bank-account", request=ClosePaymentAccountRequest)
