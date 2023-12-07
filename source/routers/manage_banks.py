@@ -31,7 +31,7 @@ async def get_supported_banks():
 async def create_user_bank(request: CreateBankRequest):
     created_bank = await UserBank.create(user_id=request.userID, support_bank_id=request.bankID, name=request.name,
                                          token=request.token.encode())
-    bank_p_accounts_n = request.paymentAccounts
+    bank_p_accounts_n = request.paymentAccountsNumber
     support_bank = await created_bank.support_bank
     list_p_accounts_response = None
 
