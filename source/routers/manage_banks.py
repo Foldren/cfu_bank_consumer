@@ -51,7 +51,7 @@ async def create_user_bank(request: CreateBankRequest):
         list_p_accounts_response = []
         for pa in created_p_accounts:
             list_p_accounts_response.append(
-                DPaymentAccountResponse(id=pa.id, accountNumber=pa.number, status=pa.status,
+                DPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
                                         legalEntityID=request.legalEntityID)
             )
 
@@ -96,8 +96,8 @@ async def get_user_banks(request: GetUserBanksRequest):
     for bank in user_banks:
         list_payment_accounts = []
         for pa in bank.payment_accounts:
-            list_payment_accounts.append(DPaymentAccountResponse(id=pa.id, accountNumber=pa.number, status=pa.status,
-                                                                 legalEntityID=pa.legal_entity_id))
+            list_payment_accounts.append(DPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number,
+                                                                 status=pa.status, legalEntityID=pa.legal_entity_id))
 
         list_banks.append(
             DBankResponse(

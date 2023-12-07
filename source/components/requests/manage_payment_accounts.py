@@ -23,3 +23,18 @@ class CreatePaymentAccountRequest:
     userID: str
     bankID: int
     legalEntityID: str
+
+
+@dataclass
+class GetPaymentAccountsRequest:
+    __slots__ = {"userID", "bankID"}
+    userID: str
+    bankID: int
+
+
+@dataclass
+class DeletePaymentAccountsRequest:
+    __slots__ = {"paymentAccountsID", "userID", "bankID"}
+    paymentAccountsID: list[int]
+    bankID: int
+    userID: str

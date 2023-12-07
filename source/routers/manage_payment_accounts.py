@@ -2,12 +2,11 @@ import traceback
 
 from faststream.rabbit import RabbitRouter
 from money import Money
-
 from components.requests.manage_payment_accounts import CreatePaymentAccountRequest, ClosePaymentAccountRequest, \
-    AccountBalancesRequest
-from components.responses.children import DBalanceResponse, DAccountBalanceResponse
+    AccountBalancesRequest, GetPaymentAccountsRequest, DeletePaymentAccountsRequest
+from components.responses.children import DBalanceResponse, DAccountBalanceResponse, DPaymentAccountResponse
 from components.responses.manage_payment_accounts import ClosePaymentAccountResponse, AccountBalancesResponse, \
-    CreatePaymentAccountResponse
+    CreatePaymentAccountResponse, GetPaymentAccountsResponse, DeletePaymentAccountsResponse
 from decorators import consumer
 from models import PaymentAccount, UserBank
 from queues import bank_queue
@@ -70,3 +69,30 @@ async def get_user_account_balances(request: AccountBalancesRequest):
         list_d_balances.append(DAccountBalanceResponse(bank=bank, balance=d_balance))
 
     return AccountBalancesResponse(balances=list_d_balances)
+
+
+@consumer(router=router, queue=bank_queue, pattern="bank.get-user-payment-accounts", request=GetPaymentAccountsRequest)
+async def get_payment_accounts(request: GetPaymentAccountsRequest):
+    p_accounts = await PaymentAccount \
+        .filter(user_bank_id=request.bankID, user_bank__user_id=request.userID) \
+        .select_related("user_bank__support_bank") \
+        .all()
+
+    list_p_accounts = []
+    for pa in p_accounts:
+        list_p_accounts.append(DPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
+                                                       legalEntityID=pa.legal_entity_id,
+                                                       supportedBankLogo=pa.user_bank.support_bank.logo_url))
+
+    return GetPaymentAccountsResponse(paymentAccounts=list_p_accounts)
+
+
+@consumer(router=router, queue=bank_queue, pattern="bank.delete-user-payment-accounts",
+          request=DeletePaymentAccountsRequest)
+async def delete_payment_accounts(request: DeletePaymentAccountsRequest):
+    p_accounts = await PaymentAccount.filter(id__in=request.paymentAccountsID, user_bank_id=request.bankID,
+                                             user_bank__user_id=request.userID).all()
+    for pa in p_accounts:
+        await pa.delete()
+
+    return DeletePaymentAccountsResponse(paymentAccountsID=request.paymentAccountsID)

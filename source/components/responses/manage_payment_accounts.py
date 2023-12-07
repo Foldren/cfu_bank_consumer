@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from components.responses.children import DAccountBalanceResponse
+from components.responses.children import DAccountBalanceResponse, DPaymentAccountResponse
 
 
 @dataclass
@@ -20,3 +20,16 @@ class CreatePaymentAccountResponse:
     supportedBankLogoUrl: str
     bankID: int
     paymentAccountNumber: str
+
+
+@dataclass
+class GetPaymentAccountsResponse:
+    __slots__ = {"paymentAccounts"}
+    paymentAccounts: list[DPaymentAccountResponse]
+
+
+@dataclass
+class DeletePaymentAccountsResponse:
+    __slots__ = {"paymentAccountsID"}
+    paymentAccountsID: list[int]
+

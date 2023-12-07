@@ -41,11 +41,12 @@ class DSupportedBankResponse:
 
 @dataclass
 class DPaymentAccountResponse:
-    __slots__ = {"id", "accountNumber", "status", "legalEntityID"}
     id: int
-    accountNumber: str
-    status: bool
+    paymentAccountNumber: str
     legalEntityID: str
+    status: bool
+    bankID: int = None
+    supportedBankLogo: str = None
 
 
 @dataclass
@@ -57,4 +58,3 @@ class DBankResponse:
     supportBankName: str
     token: str
     paymentAccounts: list[DPaymentAccountResponse]
-
