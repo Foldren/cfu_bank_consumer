@@ -3,8 +3,9 @@ from dataclasses import dataclass
 
 @dataclass
 class ClosePaymentAccountRequest:
-    __slots__ = {"userID", "paymentAccountID"}
+    __slots__ = {"userID", "bankID", "paymentAccountID"}
     userID: str
+    bankID: int
     paymentAccountID: int
 
 

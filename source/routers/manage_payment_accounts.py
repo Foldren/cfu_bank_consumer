@@ -40,7 +40,8 @@ async def create_payment_account(request: CreatePaymentAccountRequest):
 
 @consumer(router=router, queue=bank_queue, pattern="bank.close-user-bank-account", request=ClosePaymentAccountRequest)
 async def close_payment_account(request: ClosePaymentAccountRequest):
-    pa = await PaymentAccount.filter(id=request.paymentAccountID, user_bank__user_id=request.userID).first()
+    pa = await PaymentAccount.filter(id=request.paymentAccountID, user_bank__user_id=request.userID,
+                                     user_bank_id=request.bankID).first()
     pa.status = 0
     await pa.save()
 
