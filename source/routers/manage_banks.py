@@ -112,12 +112,3 @@ async def get_user_banks(request: GetUserBanksRequest):
 
     return GetUserBanksResponse(banks=list_banks)
 
-
-@consumer(router=router, queue=bank_queue, pattern="bank.get-user-expenses")
-async def get_user_expenses():
-    return 'Get user expenses handler is working!'
-
-
-@consumer(router=router, queue=bank_queue, pattern="bank.get-user-cash-balances-on-hand")
-async def get_user_cash_balances_on_hand():
-    return 'Get user cash balances on hand handler is working!'

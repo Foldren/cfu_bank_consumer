@@ -2,13 +2,6 @@ from dataclasses import dataclass
 
 
 @dataclass
-class CashBalancesOnHandRequest:
-    __slots__ = {"legalEntities", "userID"}
-    legalEntities: list[str]
-    userID: str
-
-
-@dataclass
 class CreateBankRequest:
     bankID: int
     name: str
@@ -36,13 +29,4 @@ class DeleteUserBanksRequest:
 @dataclass
 class GetUserBanksRequest:
     __slots__ = {"userID"}
-    userID: str
-
-
-@dataclass
-class ExpensesRequest:
-    __slots__ = {"dateFrom", "dateTo", "legalEntities", "userID"}
-    dateFrom: str
-    dateTo: str
-    legalEntities: list[str]
     userID: str

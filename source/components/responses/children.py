@@ -11,24 +11,10 @@ class DBalanceResponse:
 
 
 @dataclass
-class DExpensesResponse:
-    __slots__ = {"cash", "nonCash"}
-    cash: DBalanceResponse
-    nonCash: DBalanceResponse
-
-
-@dataclass
 class DAccountBalanceResponse:
     __slots__ = {"bank", "balance"}
     bank: str
     balance: Union[DBalanceResponse, None]
-
-
-@dataclass
-class DCashBalanceOnHandResponse:
-    __slots__ = {"fio", "balance"}
-    fio: str
-    balance: DBalanceResponse
 
 
 @dataclass
