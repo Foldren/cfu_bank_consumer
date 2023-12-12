@@ -1,3 +1,5 @@
+import traceback
+
 from faststream.rabbit import RabbitRouter
 from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBanksRequest, \
     GetUserBanksRequest
@@ -45,6 +47,7 @@ async def create_user_bank(request: CreateBankRequest):
 
         # Создаем расчетные счета
         await PaymentAccount.bulk_create(list_p_accounts_obj, ignore_conflicts=True)
+
         created_p_accounts = await PaymentAccount.filter(user_bank_id=created_bank.id)
 
         # Формируем из них респонсы

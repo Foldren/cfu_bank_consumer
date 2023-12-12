@@ -7,7 +7,7 @@ class CreateBankRequest:
     name: str
     token: str
     userID: str
-    legalEntityID: str = None
+    legalEntityID: str
     paymentAccountsNumber: list[str] = None
 
 
