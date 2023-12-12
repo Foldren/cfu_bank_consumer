@@ -1,6 +1,8 @@
 import traceback
 
 from faststream.rabbit import RabbitRouter
+from tortoise.fields import RESTRICT
+
 from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBanksRequest, \
     GetUserBanksRequest
 from components.responses.children import DSupportedBankResponse, DBankResponse, DPaymentAccountResponse
@@ -46,7 +48,11 @@ async def create_user_bank(request: CreateBankRequest):
             )
 
         # Создаем расчетные счета
-        await PaymentAccount.bulk_create(list_p_accounts_obj, ignore_conflicts=True)
+        try:
+            await PaymentAccount.bulk_create(list_p_accounts_obj)
+        except Exception as e:
+            await created_bank.delete()
+            raise Exception(e)
 
         created_p_accounts = await PaymentAccount.filter(user_bank_id=created_bank.id)
 
@@ -114,4 +120,3 @@ async def get_user_banks(request: GetUserBanksRequest):
         )
 
     return GetUserBanksResponse(banks=list_banks)
-
