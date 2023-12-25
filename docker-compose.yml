@@ -9,13 +9,13 @@ services:
     env_file:
       - ./source/.env
     depends_on:
-      - bank_consumer_db
+      - bank_db
     networks:
       - uprav_cfu_network
 
-  bank_consumer_db:
+  bank_db:
     image: postgres:16.1-alpine3.18
-    container_name: bank_consumer_db
+    container_name: bank_db
     restart: always
     env_file:
       - ./.env
