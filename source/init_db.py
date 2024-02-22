@@ -1,14 +1,12 @@
 from tortoise import Tortoise
-from config import POSTGRES_URL
+from config import TORTOISE_CONFIG
 from models import SupportBank
 
 
 async def init_db():
-    await Tortoise.init(
-        db_url=POSTGRES_URL,
-        modules={'models': ["models"]},
-    )
+    await Tortoise.init(TORTOISE_CONFIG)
     await Tortoise.generate_schemas(safe=True)
+
     support_banks = await SupportBank.all()
 
     if not support_banks:

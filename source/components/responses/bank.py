@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from components.responses.children import DSupportedBankResponse, DBankResponse, DPaymentAccountResponse
+from components.responses.children import CSupportedBankResponse, CBankResponse, CPaymentAccountResponse
 
 
 @dataclass
 class GetSupportedBanksResponse:
-    banks: list[DSupportedBankResponse]
+    banks: list[CSupportedBankResponse]
 
 
 @dataclass
@@ -13,13 +13,13 @@ class CreateUserBankResponse:
     name: str
     bankID: int
     bankUrl: str
-    paymentAccounts: list[DPaymentAccountResponse] = None
+    paymentAccounts: list[CPaymentAccountResponse] = None
 
 
 @dataclass
 class GetUserBanksResponse:
     __slots__ = {"banks"}
-    banks: list[DBankResponse]
+    banks: list[CBankResponse]
 
 
 @dataclass

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from components.responses.children import DAccountBalanceResponse, DPaymentAccountResponse
+from components.responses.children import CAccountBalanceResponse, CPaymentAccountResponse
 
 
 @dataclass
@@ -11,7 +11,7 @@ class ClosePaymentAccountResponse:
 @dataclass
 class AccountBalancesResponse:
     __slots__ = {"balances"}
-    balances: list[DAccountBalanceResponse]
+    balances: list[CAccountBalanceResponse]
 
 
 @dataclass
@@ -25,7 +25,7 @@ class CreatePaymentAccountResponse:
 @dataclass
 class GetPaymentAccountsResponse:
     __slots__ = {"paymentAccounts"}
-    paymentAccounts: list[DPaymentAccountResponse]
+    paymentAccounts: list[CPaymentAccountResponse]
 
 
 @dataclass

@@ -4,12 +4,12 @@ from faststream.rabbit import RabbitBroker
 from tortoise import run_async
 from config import RABBITMQ_URL
 from init_db import init_db
-from routers import manage_banks, manage_payment_accounts
+from routers import bank, payment_account, data_collect
 
 broker = RabbitBroker(RABBITMQ_URL)
 app = FastStream(broker)
 
-broker.include_routers(manage_banks.router, manage_payment_accounts.router)
+broker.include_routers(bank.router, payment_account.router, data_collect.router)
 
 
 async def main():

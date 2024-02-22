@@ -1,16 +1,12 @@
-import traceback
-
-from faststream.rabbit import RabbitRouter
-from tortoise.fields import RESTRICT
-
-from components.requests.manage_banks import CreateBankRequest, UpdateUserBankRequest, DeleteUserBanksRequest, \
-    GetUserBanksRequest
-from components.responses.children import DSupportedBankResponse, DBankResponse, DPaymentAccountResponse
-from components.responses.manage_banks import GetSupportedBanksResponse, CreateUserBankResponse, UpdateUserBankResponse, \
+from components.responses.children import CSupportedBankResponse, CBankResponse, CPaymentAccountResponse
+from components.responses.bank import GetSupportedBanksResponse, CreateUserBankResponse, UpdateUserBankResponse, \
     DeleteUserBanksResponse, GetUserBanksResponse
 from decorators import consumer
+from faststream.rabbit import RabbitRouter
 from models import SupportBank, UserBank, PaymentAccount
 from queues import bank_queue
+from components.requests.bank import CreateBankRequest, DeleteUserBanksRequest, GetUserBanksRequest, \
+    UpdateUserBankRequest
 
 router = RabbitRouter()
 
@@ -26,7 +22,7 @@ async def get_supported_banks():
     list_banks = []
 
     for bank in support_banks:
-        list_banks.append(DSupportedBankResponse(id=bank.id, name=bank.name, url=bank.logo_url))
+        list_banks.append(CSupportedBankResponse(id=bank.id, name=bank.name, url=bank.logo_url))
 
     return GetSupportedBanksResponse(banks=list_banks)
 
@@ -60,7 +56,7 @@ async def create_user_bank(request: CreateBankRequest):
         list_p_accounts_response = []
         for pa in created_p_accounts:
             list_p_accounts_response.append(
-                DPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
+                CPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
                                         legalEntityID=request.legalEntityID)
             )
 
@@ -105,11 +101,11 @@ async def get_user_banks(request: GetUserBanksRequest):
     for bank in user_banks:
         list_payment_accounts = []
         for pa in bank.payment_accounts:
-            list_payment_accounts.append(DPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number,
+            list_payment_accounts.append(CPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number,
                                                                  status=pa.status, legalEntityID=pa.legal_entity_id))
 
         list_banks.append(
-            DBankResponse(
+            CBankResponse(
                 id=bank.id,
                 name=bank.name,
                 bankID=bank.support_bank.id,

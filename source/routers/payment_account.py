@@ -1,11 +1,9 @@
-import traceback
-
 from faststream.rabbit import RabbitRouter
 from money import Money
-from components.requests.manage_payment_accounts import CreatePaymentAccountRequest, ClosePaymentAccountRequest, \
+from components.requests.payment_account import CreatePaymentAccountRequest, ClosePaymentAccountRequest, \
     AccountBalancesRequest, GetPaymentAccountsRequest, DeletePaymentAccountsRequest
-from components.responses.children import DBalanceResponse, DAccountBalanceResponse, DPaymentAccountResponse
-from components.responses.manage_payment_accounts import ClosePaymentAccountResponse, AccountBalancesResponse, \
+from components.responses.children import CBalanceResponse, CAccountBalanceResponse, CPaymentAccountResponse
+from components.responses.payment_account import ClosePaymentAccountResponse, AccountBalancesResponse, \
     CreatePaymentAccountResponse, GetPaymentAccountsResponse, DeletePaymentAccountsResponse
 from decorators import consumer
 from models import PaymentAccount, UserBank
@@ -65,8 +63,8 @@ async def get_user_account_balances(request: AccountBalancesRequest):
 
     list_d_balances = []
     for bank, balance in list_bank_balances.items():
-        d_balance = DBalanceResponse(balance=balance.amount, currency="RUB")
-        list_d_balances.append(DAccountBalanceResponse(bank=bank, balance=d_balance))
+        d_balance = CBalanceResponse(balance=balance.amount, currency="RUB")
+        list_d_balances.append(CAccountBalanceResponse(bank=bank, balance=d_balance))
 
     return AccountBalancesResponse(balances=list_d_balances)
 
@@ -80,7 +78,7 @@ async def get_payment_accounts(request: GetPaymentAccountsRequest):
 
     list_p_accounts = []
     for pa in p_accounts:
-        list_p_accounts.append(DPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
+        list_p_accounts.append(CPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
                                                        legalEntityID=pa.legal_entity_id,
                                                        supportedBankLogo=pa.user_bank.support_bank.logo_url))
 
