@@ -17,7 +17,7 @@ async def get_data_collects(request: GetDataCollectsRequest):
     start_date = datetime.strptime(request.dateFrom, "%Y-%m-%d")
     end_date = datetime.strptime(request.dateTo, "%Y-%m-%d")
 
-    expr = (Q(payment_account__legal_entity_id__in=request.legalEntities) &
+    expr = (Q(payment_account__legal_entity_id__in=request.legalEntitiesID) &
             Q(payment_account__user_bank__user_id=request.userID) &
             Q(trxn_date__range=[start_date, end_date])
             )

@@ -11,11 +11,6 @@ from components.requests.bank import CreateBankRequest, DeleteUserBanksRequest, 
 router = RabbitRouter()
 
 
-# @router.subscriber(queue=bank_queue)
-# async def purge_messages():
-#     pass
-
-
 @consumer(router=router, queue=bank_queue, pattern="bank.get-supported-banks")
 async def get_supported_banks():
     support_banks = await SupportBank.all()
