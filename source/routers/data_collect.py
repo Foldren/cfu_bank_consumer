@@ -26,8 +26,9 @@ async def get_data_collects(request: GetDataCollectsRequest):
 
     list_data_collects = []
     for dc in data_collects:
-        list_data_collects.append(CDataCollectResponse(legalEntity=dc.payment_account.legal_entity_id,
+        dc_date = dc.trxn_date.strftime("%Y-%m-%d")
+        list_data_collects.append(CDataCollectResponse(legalEntityID=dc.payment_account.legal_entity_id,
                                                        counterpartyInn=dc.counterparty_inn,
-                                                       amount=dc.amount, type=dc.type))
+                                                       amount=dc.amount, type=dc.type, date=dc_date))
 
     return GetDataCollectsResponse(data_collects=list_data_collects)

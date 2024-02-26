@@ -48,8 +48,9 @@ class CBankResponse:
 
 @dataclass
 class CDataCollectResponse:
-    __slots__ = {"legalEntity", "counterpartyInn", "amount", "type"}
-    legalEntity: str
+    __slots__ = {"legalEntityID", "counterpartyInn", "amount", "date", "type"}
+    legalEntityID: str
     counterpartyInn: str
     amount: Decimal
+    date: str
     type: str
