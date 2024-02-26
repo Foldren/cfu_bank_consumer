@@ -1,5 +1,5 @@
-faststream~=0.2.14
-aio-pika
+faststream~=0.4.4
+aio-pika~=9.4.0
 tortoise-orm
 tortoise-orm[asyncpg]
 asyncpg
