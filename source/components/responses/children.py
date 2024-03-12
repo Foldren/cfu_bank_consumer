@@ -44,13 +44,3 @@ class CBankResponse:
     supportBankName: str
     token: str
     paymentAccounts: list[CPaymentAccountResponse]
-
-
-@dataclass
-class CDataCollectResponse:
-    __slots__ = {"legalEntityID", "counterpartyInn", "amount", "date", "type"}
-    legalEntityID: str
-    counterpartyInn: str
-    amount: Decimal
-    date: str
-    type: str

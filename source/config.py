@@ -13,12 +13,9 @@ RABBITMQ_URL = environ['RABBITMQ_URL']
 
 TORTOISE_CONFIG = {
     "connections": {
-        "default": environ['PG_URL']
+        "bank": environ['BANK_PG_URL']
     },
     "apps": {
-        "models": {
-            "models": ["models", "aerich.models"],
-            "default_connection": "default"
-        }
+        "bank": {"models": ["models", "aerich.models"], "default_connection": "bank"}
     }
 }
