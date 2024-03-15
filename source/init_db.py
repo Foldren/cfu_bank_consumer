@@ -9,8 +9,8 @@ async def init_db():
     await Tortoise.init(TORTOISE_CONFIG)
     await Tortoise.generate_schemas(safe=True)
 
-    if date(2024, 3, 12) == date.today():
-        command = Command(tortoise_config=TORTOISE_CONFIG, app='models', location="./migrations")
+    if date(2024, 3, 15) == date.today():
+        command = Command(tortoise_config=TORTOISE_CONFIG, app='bank', location="./migrations")
         await command.init()
         await command.upgrade(True)
 
