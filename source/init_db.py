@@ -2,7 +2,7 @@ from datetime import date
 from aerich import Command
 from tortoise import Tortoise
 from config import TORTOISE_CONFIG
-from models import SupportBank
+from db_models.bank import SupportBank
 
 
 async def init_db():

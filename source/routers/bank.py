@@ -1,9 +1,11 @@
 from components.responses.children import CSupportedBankResponse, CBankResponse, CPaymentAccountResponse
 from components.responses.bank import GetSupportedBanksResponse, CreateUserBankResponse, UpdateUserBankResponse, \
     DeleteUserBanksResponse, GetUserBanksResponse
+from config import STATIC_CATEGORIES
+from db_models.bank import UserBank, SupportBank, PaymentAccount
+from db_models.telegram import Category
 from decorators import consumer
 from faststream.rabbit import RabbitRouter
-from models import SupportBank, UserBank, PaymentAccount
 from queues import bank_queue
 from components.requests.bank import CreateBankRequest, DeleteUserBanksRequest, GetUserBanksRequest, \
     UpdateUserBankRequest
@@ -54,6 +56,17 @@ async def create_user_bank(request: CreateBankRequest):
                 CPaymentAccountResponse(id=pa.id, paymentAccountNumber=pa.number, status=pa.status,
                                         legalEntityID=request.legalEntityID)
             )
+
+    # Проверяем есть ли статические категории
+    static_categories = await Category.filter(user_id=request.userID, status=2).all()
+
+    if not static_categories:
+        static_categories_obj = []
+
+        for sc in STATIC_CATEGORIES:
+            static_categories_obj.append(Category(user_id=request.userID, status=3, name=sc))
+
+        await Category.bulk_create(static_categories_obj, ignore_conflicts=True)
 
     return CreateUserBankResponse(id=created_bank.id, name=created_bank.name, bankID=support_bank.id,
                                   bankUrl=support_bank.logo_url, paymentAccounts=list_p_accounts_response)

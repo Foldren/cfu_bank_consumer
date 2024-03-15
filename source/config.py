@@ -13,9 +13,16 @@ RABBITMQ_URL = environ['RABBITMQ_URL']
 
 TORTOISE_CONFIG = {
     "connections": {
+        "telegram": environ['TG_PG_URL'],
         "bank": environ['BANK_PG_URL']
     },
     "apps": {
-        "bank": {"models": ["models", "aerich.models"], "default_connection": "bank"}
+        "telegram": {"models": ["db_models.telegram"], "default_connection": "telegram"},
+        "bank": {"models": ["db_models.bank"], "default_connection": "bank"}
     }
 }
+
+# Не редактируемые категории
+STATIC_CATEGORIES = [
+    "Зарплата", "Аренда", "Упаковка"
+]

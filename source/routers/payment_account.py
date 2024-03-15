@@ -5,8 +5,8 @@ from components.requests.payment_account import CreatePaymentAccountRequest, Clo
 from components.responses.children import CBalanceResponse, CAccountBalanceResponse, CPaymentAccountResponse
 from components.responses.payment_account import ClosePaymentAccountResponse, AccountBalancesResponse, \
     CreatePaymentAccountResponse, GetPaymentAccountsResponse, DeletePaymentAccountsResponse
+from db_models.bank import UserBank, PaymentAccount
 from decorators import consumer
-from models import PaymentAccount, UserBank
 from queues import bank_queue
 
 router = RabbitRouter()
