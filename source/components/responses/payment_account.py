@@ -29,7 +29,12 @@ class GetPaymentAccountsResponse:
 
 
 @dataclass
+class GetApiPaymentAccountsResponse:
+    __slots__ = {"paymentAccounts"}
+    paymentAccounts: list[str]
+
+
+@dataclass
 class DeletePaymentAccountsResponse:
     __slots__ = {"paymentAccountsID"}
     paymentAccountsID: list[int]
-

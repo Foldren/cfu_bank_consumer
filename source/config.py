@@ -24,3 +24,7 @@ TORTOISE_CONFIG = {
 
 # Не редактируемые категории
 STATIC_CATEGORIES = ["Зарплата", "Аренда", "Упаковка"]
+
+PROXY6NET_PROXIES = {"socks5://": environ['PROXY_HTTPS_URL']}
+
+BANKS_INDEXES = ["tinkoff", "module", "tochka"]

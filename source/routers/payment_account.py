@@ -1,12 +1,17 @@
 from faststream.rabbit import RabbitRouter
 from money import Money
 from components.requests.payment_account import CreatePaymentAccountRequest, ClosePaymentAccountRequest, \
-    AccountBalancesRequest, GetPaymentAccountsRequest, DeletePaymentAccountsRequest
+    AccountBalancesRequest, GetPaymentAccountsRequest, DeletePaymentAccountsRequest, GetApiPaymentAccountsRequest
 from components.responses.children import CBalanceResponse, CAccountBalanceResponse, CPaymentAccountResponse
 from components.responses.payment_account import ClosePaymentAccountResponse, AccountBalancesResponse, \
-    CreatePaymentAccountResponse, GetPaymentAccountsResponse, DeletePaymentAccountsResponse
-from db_models.bank import UserBank, PaymentAccount
+    CreatePaymentAccountResponse, GetPaymentAccountsResponse, DeletePaymentAccountsResponse, \
+    GetApiPaymentAccountsResponse
+from config import BANKS_INDEXES
+from db_models.bank import UserBank, PaymentAccount, SupportBankName
 from decorators import consumer
+from modules.banks.module import Module
+from modules.banks.tinkoff import Tinkoff
+from modules.banks.tochka import Tochka
 from queues import bank_queue
 
 router = RabbitRouter()
@@ -94,3 +99,30 @@ async def delete_payment_accounts(request: DeletePaymentAccountsRequest):
         await pa.delete()
 
     return DeletePaymentAccountsResponse(paymentAccountsID=request.paymentAccountsID)
+
+
+@consumer(router=router, queue=bank_queue, pattern="bank.get-api-payment-accounts",
+          request=GetApiPaymentAccountsRequest)
+async def get_api_payment_accounts(request: GetApiPaymentAccountsRequest):
+    pa_numbers = []
+
+    try:
+        match BANKS_INDEXES[request.bankID]:
+            case "tochka":
+                pa_numbers = await Tochka.get_payment_accounts(request.token)
+
+            case "module":
+                pa_numbers = await Module.get_payment_accounts(request.token)
+
+            case "tinkoff":
+                pa_numbers = await Tinkoff.get_payment_accounts(request.token)
+
+    except IndexError:
+        raise IndexError("Указанный банк не поддерживается.")
+
+    return GetApiPaymentAccountsResponse(paymentAccounts=pa_numbers)
+
+
+
+
+

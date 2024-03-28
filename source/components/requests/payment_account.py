@@ -38,3 +38,10 @@ class DeletePaymentAccountsRequest:
     paymentAccountsID: list[int]
     bankID: int
     userID: str
+
+
+@dataclass
+class GetApiPaymentAccountsRequest:
+    __slots__ = {"bankID", "token"}
+    bankID: int
+    token: str
