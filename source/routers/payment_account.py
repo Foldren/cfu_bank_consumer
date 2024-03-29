@@ -1,3 +1,4 @@
+from cryptography.fernet import Fernet
 from faststream.rabbit import RabbitRouter
 from money import Money
 from components.requests.payment_account import CreatePaymentAccountRequest, ClosePaymentAccountRequest, \
@@ -6,8 +7,8 @@ from components.responses.children import CBalanceResponse, CAccountBalanceRespo
 from components.responses.payment_account import ClosePaymentAccountResponse, AccountBalancesResponse, \
     CreatePaymentAccountResponse, GetPaymentAccountsResponse, DeletePaymentAccountsResponse, \
     GetApiPaymentAccountsResponse
-from config import BANKS_INDEXES
-from db_models.bank import UserBank, PaymentAccount, SupportBankName
+from config import BANKS_INDEXES, SECRET_KEY
+from db_models.bank import UserBank, PaymentAccount
 from decorators import consumer
 from modules.banks.module import Module
 from modules.banks.tinkoff import Tinkoff
@@ -105,17 +106,18 @@ async def delete_payment_accounts(request: DeletePaymentAccountsRequest):
           request=GetApiPaymentAccountsRequest)
 async def get_api_payment_accounts(request: GetApiPaymentAccountsRequest):
     pa_numbers = []
+    decrypt_token = Fernet(SECRET_KEY).decrypt(request.token).decode('utf-8')
 
     try:
         match BANKS_INDEXES[request.bankID]:
             case "tochka":
-                pa_numbers = await Tochka.get_payment_accounts(request.token)
+                pa_numbers = await Tochka.get_payment_accounts(decrypt_token)
 
             case "module":
-                pa_numbers = await Module.get_payment_accounts(request.token)
+                pa_numbers = await Module.get_payment_accounts(decrypt_token)
 
             case "tinkoff":
-                pa_numbers = await Tinkoff.get_payment_accounts(request.token)
+                pa_numbers = await Tinkoff.get_payment_accounts(decrypt_token)
 
     except IndexError:
         raise IndexError("Указанный банк не поддерживается.")
