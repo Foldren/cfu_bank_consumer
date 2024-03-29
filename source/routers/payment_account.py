@@ -9,11 +9,11 @@ from components.responses.payment_account import ClosePaymentAccountResponse, Ac
     GetApiPaymentAccountsResponse
 from config import BANKS_INDEXES, SECRET_KEY
 from db_models.bank import UserBank, PaymentAccount
-from decorators import consumer
+from components.decorators import consumer
 from modules.banks.module import Module
 from modules.banks.tinkoff import Tinkoff
 from modules.banks.tochka import Tochka
-from queues import bank_queue
+from components.queues import bank_queue
 
 router = RabbitRouter()
 

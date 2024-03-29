@@ -1,5 +1,4 @@
 from faststream.rabbit import RabbitRouter
-from queues import bank_queue
 
 router = RabbitRouter()
 

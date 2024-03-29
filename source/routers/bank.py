@@ -4,9 +4,9 @@ from components.responses.bank import GetSupportedBanksResponse, CreateUserBankR
 from config import STATIC_CATEGORIES
 from db_models.bank import UserBank, SupportBank, PaymentAccount
 from db_models.telegram import Category
-from decorators import consumer
+from components.decorators import consumer
 from faststream.rabbit import RabbitRouter
-from queues import bank_queue
+from components.queues import bank_queue
 from components.requests.bank import CreateUserBankRequest, DeleteUserBanksRequest, GetUserBanksRequest, \
     UpdateUserBankRequest
 
