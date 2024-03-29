@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class CreateBankRequest:
+class CreateUserBankRequest:
     bankID: int
     name: str
     token: str

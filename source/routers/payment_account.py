@@ -20,7 +20,13 @@ router = RabbitRouter()
 
 @consumer(router=router, queue=bank_queue, pattern='bank.create-user-payment-account',
           request=CreatePaymentAccountRequest)
-async def create_payment_account(request: CreatePaymentAccountRequest):
+async def create_payment_account(request: CreatePaymentAccountRequest) -> CreatePaymentAccountResponse:
+    """
+    Роут на создание расчетного счета, с проверкой на принадлежность банка юзеру
+    :param request: объект на создание расчетного счета CreatePaymentAccountRequest
+    :return: response объект на создание расчетного счета CreatePaymentAccountResponse
+    """
+
     user_bank = await UserBank.filter(id=request.bankID, user_id=request.userID).all()
 
     if user_bank:
@@ -38,12 +44,19 @@ async def create_payment_account(request: CreatePaymentAccountRequest):
             paymentAccountNumber=request.paymentAccountNumber
         )
     else:
-        raise Exception("This bank does not belong to the user!")
+        raise Exception("Этот банк больше не принадлежит юзеру!")
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.close-user-bank-account", request=ClosePaymentAccountRequest)
-async def close_payment_account(request: ClosePaymentAccountRequest):
-    pa = await PaymentAccount.filter(id=request.paymentAccountID, user_bank__user_id=request.userID,
+async def close_payment_account(request: ClosePaymentAccountRequest) -> ClosePaymentAccountResponse:
+    """
+    Роут на закрытие расчетного счета (меняет статус на 0)
+    :param request: объект на закрытие расчетного счета ClosePaymentAccountRequest
+    :return: response объект на закрытие расчетного счета ClosePaymentAccountResponse
+    """
+
+    pa = await PaymentAccount.filter(id=request.paymentAccountID,
+                                     user_bank__user_id=request.userID,
                                      user_bank_id=request.bankID).first()
     pa.status = 0
     await pa.save()
@@ -52,7 +65,13 @@ async def close_payment_account(request: ClosePaymentAccountRequest):
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-user-account-balances", request=AccountBalancesRequest)
-async def get_user_account_balances(request: AccountBalancesRequest):
+async def get_user_account_balances(request: AccountBalancesRequest) -> AccountBalancesResponse:
+    """
+    Роут на получение балансов на расчетных счетах ЮР лиц (балансы обновляются каждые 5 минут в task_sheduler мс)
+    :param request: объект на получение балансов на расчетных счетах ЮР лиц AccountBalancesRequest
+    :return: response объект на получение балансов на расчетных счетах ЮР лиц AccountBalancesResponse
+    """
+
     selected_pa = await PaymentAccount \
         .filter(user_bank__user_id=request.userID, legal_entity_id__in=request.legalEntities) \
         .select_related("user_bank__support_bank")
@@ -76,7 +95,13 @@ async def get_user_account_balances(request: AccountBalancesRequest):
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-user-payment-accounts", request=GetPaymentAccountsRequest)
-async def get_payment_accounts(request: GetPaymentAccountsRequest):
+async def get_payment_accounts(request: GetPaymentAccountsRequest) -> GetPaymentAccountsResponse:
+    """
+    Роут на получение списка расчетных счетов пользователя
+    :param request: объект на получение списка расчетных счетов GetPaymentAccountsRequest
+    :return: response объект на получение списка расчетных счетов GetPaymentAccountsResponse
+    """
+
     p_accounts = await PaymentAccount \
         .filter(user_bank_id=request.bankID, user_bank__user_id=request.userID) \
         .select_related("user_bank__support_bank") \
@@ -93,7 +118,13 @@ async def get_payment_accounts(request: GetPaymentAccountsRequest):
 
 @consumer(router=router, queue=bank_queue, pattern="bank.delete-user-payment-accounts",
           request=DeletePaymentAccountsRequest)
-async def delete_payment_accounts(request: DeletePaymentAccountsRequest):
+async def delete_payment_accounts(request: DeletePaymentAccountsRequest) -> DeletePaymentAccountsResponse:
+    """
+    Роут на удаление расчетных счетов пользователя
+    :param request: объект на удаление расчетных счетов DeletePaymentAccountsRequest
+    :return: response объект на удаление расчетных счетов DeletePaymentAccountsResponse
+    """
+
     p_accounts = await PaymentAccount.filter(id__in=request.paymentAccountsID, user_bank_id=request.bankID,
                                              user_bank__user_id=request.userID).all()
     for pa in p_accounts:
@@ -104,7 +135,13 @@ async def delete_payment_accounts(request: DeletePaymentAccountsRequest):
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-api-payment-accounts",
           request=GetApiPaymentAccountsRequest)
-async def get_api_payment_accounts(request: GetApiPaymentAccountsRequest):
+async def get_api_payment_accounts(request: GetApiPaymentAccountsRequest) -> GetApiPaymentAccountsResponse:
+    """
+    Роут на получение списка расчетных счетов по токену банка (берет данные из API банков)
+    :param request: объект на получение списка расчетных счетов по токену GetApiPaymentAccountsRequest
+    :return: response объект на получение списка расчетных счетов по токену GetApiPaymentAccountsResponse
+    """
+
     pa_numbers = []
     decrypt_token = Fernet(SECRET_KEY).decrypt(request.token).decode('utf-8')
 

@@ -7,14 +7,19 @@ from db_models.telegram import Category
 from decorators import consumer
 from faststream.rabbit import RabbitRouter
 from queues import bank_queue
-from components.requests.bank import CreateBankRequest, DeleteUserBanksRequest, GetUserBanksRequest, \
+from components.requests.bank import CreateUserBankRequest, DeleteUserBanksRequest, GetUserBanksRequest, \
     UpdateUserBankRequest
 
 router = RabbitRouter()
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-supported-banks")
-async def get_supported_banks():
+async def get_supported_banks() -> GetSupportedBanksResponse:
+    """
+    Роут на получение списка поддерживаемых банков
+    :return: response объект на получение списка поддерживаемых банков GetSupportedBanksResponse
+    """
+
     support_banks = await SupportBank.all()
     list_banks = []
 
@@ -24,8 +29,15 @@ async def get_supported_banks():
     return GetSupportedBanksResponse(banks=list_banks)
 
 
-@consumer(router=router, queue=bank_queue, pattern="bank.create-user-bank", request=CreateBankRequest)
-async def create_user_bank(request: CreateBankRequest):
+@consumer(router=router, queue=bank_queue, pattern="bank.create-user-bank", request=CreateUserBankRequest)
+async def create_user_bank(request: CreateUserBankRequest) -> CreateUserBankResponse:
+    """
+    Роут на создание пользовательского банка, если есть расчетные счета, также прикрепляет их к банку. Дополнительно
+    проверяет наличие сервисных и статических категории, при необходимости создает их
+    :param request: объект на создание пользовательского банка CreateUserBankRequest
+    :return: response объект на создание пользовательского банка CreateUserBankResponse
+    """
+
     created_bank = await UserBank.create(user_id=request.userID, support_bank_id=request.bankID, name=request.name,
                                          token=request.token.encode())
     bank_p_accounts_n = request.paymentAccountsNumber
@@ -73,7 +85,13 @@ async def create_user_bank(request: CreateBankRequest):
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.update-user-bank", request=UpdateUserBankRequest)
-async def update_user_bank(request: UpdateUserBankRequest):
+async def update_user_bank(request: UpdateUserBankRequest) -> UpdateUserBankResponse:
+    """
+    Роут на обновление пользовательского банка
+    :param request: объект на обновление пользовательского банка UpdateUserBankRequest
+    :return: response объект на обновление пользовательского банка UpdateUserBankResponse
+    """
+
     user_bank = await UserBank.filter(id=request.id, user_id=request.userID).first()
     support_bank = await user_bank.support_bank
 
@@ -94,14 +112,26 @@ async def update_user_bank(request: UpdateUserBankRequest):
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.delete-user-banks", request=DeleteUserBanksRequest)
-async def delete_user_banks(request: DeleteUserBanksRequest):
+async def delete_user_banks(request: DeleteUserBanksRequest) -> DeleteUserBanksResponse:
+    """
+    Роут на удаление пользовательских банков
+    :param request: объект на удаление пользовательских банков DeleteUserBanksRequest
+    :return: response объект на удаление пользовательских банков DeleteUserBanksResponse
+    """
+
     await UserBank.filter(id__in=request.banksID, user_id=request.userID).delete()
 
     return DeleteUserBanksResponse(banksID=request.banksID)
 
 
 @consumer(router=router, queue=bank_queue, pattern="bank.get-user-banks", request=GetUserBanksRequest)
-async def get_user_banks(request: GetUserBanksRequest):
+async def get_user_banks(request: GetUserBanksRequest) -> GetUserBanksResponse:
+    """
+    Роут на получение списка пользовательских банков
+    :param request: объект на получение списка пользовательских банков GetUserBanksRequest
+    :return: response объект на получение списка пользовательских банков GetUserBanksResponse
+    """
+
     user_banks = await UserBank.filter(user_id=request.userID).prefetch_related("support_bank",
                                                                                 "payment_accounts").all()
     list_banks = []
