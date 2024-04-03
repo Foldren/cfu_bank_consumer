@@ -10,13 +10,16 @@ async def init_db():
     await Tortoise.generate_schemas(safe=True)
 
     if date(2024, 4, 3) == date.today():
-        support_bank_list = [
-            SupportBank(name="Альфа"),
-            SupportBank(name="ВТБ"),
-            SupportBank(name="Сбер"),
-        ]
+        new_bank = await SupportBank.filter(name="Альфа").first()
 
-        await SupportBank.bulk_create(support_bank_list)
+        if not new_bank:
+            support_bank_list = [
+                SupportBank(name="Альфа"),
+                SupportBank(name="ВТБ"),
+                SupportBank(name="Сбер"),
+            ]
+
+            await SupportBank.bulk_create(support_bank_list)
 
         # command = Command(tortoise_config=TORTOISE_CONFIG, app='bank', location="./migrations")
         # await command.init()
