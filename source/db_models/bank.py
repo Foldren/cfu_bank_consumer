@@ -10,6 +10,9 @@ class SupportBankName(str, Enum):
     tinkoff = "Тинькофф"
     module = "Модуль"
     tochka = "Точка"
+    alfa = "Альфа"
+    vtb = "ВТБ"
+    sber = "Сбер"
 
 
 class SupportBank(Model):
