@@ -1,0 +1,8 @@
+from asyncio import run
+from modules.banks.tochka import Tochka
+
+
+# if __name__ == "__main__":
+#     print(run(Tochka.get_payment_accounts(
+#         token='eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJQQW1NR3RZSHF4S1NTdUlkM1BLenYxdGxLNFh1bDJwOCJ9.eDGdFpu8g9FKg6rhQJ4JyoYNyrJTyvkOlqfT20NP9m4A4hV-hgGcWBe8HQ_TtVfAottECciDRoGLyHqtPXvxVzPuj2XPwPc2SrLp_Sp8n6tHXa08v9aFoIiXA1na-CqohcI7KfcPkoHIddseVLhVINhKqhoRIg6yO3U0iSK4Da_0DipZjSMY669oqTKuACp9cDymrec6zYwsMc_RfPcrJwwwEFWIP6GoMPCC0JOq3U837qHtmh3MjYzg0D0G0Ub4ybNPVmcuBgceTteLhH64xhcnIyJQq2kIcaRzfIKvUBGo24V9ywxrldB7fPZjhk4g_Sh_staOI0C8UX4KPdSodGeO76L8n8DbJIhjFOhKMhrG76d8aVbPRzNmUBOYybmW1DJfUojzM_ZN-q7k1dPvJIQt-nEaMXOocQHWxhSgFKlEBabZHmfYRh48UmtcotbMPV4HIUgHj3zaKUzhVj1t2KSWyfngEXUN5qmvlVXPqJJo-fTYy52LmWlqmupycCFh'
+#     )))

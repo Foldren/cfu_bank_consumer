@@ -8,15 +8,15 @@ class Tochka:
         headers = {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'}
 
         async with AsyncClient(proxies=PROXY6NET_PROXIES) as async_session:
-            r_balances = await async_session.get(
-                url="https://enter.tochka.com/uapi/open-banking/v1.0/balances",
+            r_accounts = await async_session.get(
+                url="https://enter.tochka.com/uapi/open-banking/v1.0/accounts",
                 headers=headers
             )
 
-            if r_balances.status_code != 200:
-                raise Exception(f"[error]: Error on api tochka on operation get balances:\n\n {r_balances.text}")
+            if r_accounts.status_code != 200:
+                raise Exception(f"[error]: Error on api tochka on operation get balances:\n\n {r_accounts.text}")
 
-            json_balances = r_balances.json()["Data"]["Balance"]
+            json_balances = r_accounts.json()["Data"]["Account"]
 
             # Получаем балансы -----------------------------------------------------------------------------------------
             payment_accounts = []
